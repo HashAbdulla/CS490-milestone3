@@ -11,7 +11,7 @@ This project classifies emails as Benign (0) or Phishing (1) to prevent credenti
 3. Place `extended_corpus.jsonl` in the `code/` directory alongside the notebook.
 
 ## Hardware Assumptions
-This pipeline is configured to leverage CUDA hardware acceleration. It was tested locally on an NVIDIA RTX 3050 GPU. Training takes approximately 3-5 minutes on this hardware.
+This pipeline is configured to leverage CUDA hardware acceleration. It was tested locally on an NVIDIA RTX 3050 GPU. Training takes approximately under 2 minutes on this hardware.
 
 ## How to Run & Reproduce Results
 1. Open `code/final_system.ipynb` in Jupyter or VS Code.
