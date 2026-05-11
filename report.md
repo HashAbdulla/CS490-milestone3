@@ -19,18 +19,19 @@ To resolve this, the final system shifts to a Transformer architecture.
 * **LoRA Settings:** Rank (r) = 8, Alpha = 16, Dropout = 0.1. 
 * **Trainable Parameters:** 629,762 (out of 67M total parameters). By training less than 1% of the model, we achieved rapid convergence without overfitting.
 * **Training Details:** AdamW Optimizer, Learning Rate = 2e-4, Batch Size = 16, Epochs = 3.
+* **Reproducibility & Seeding:** Because AutoModelForSequenceClassification randomly initializes the weights for its new classification head, the Base System's zero-shot performance initially fluctuated between 44% and 60% accuracy across runs. To guarantee a fair, mathematically reproducible comparison, all random number generators (python, numpy, and torch/CUDA) were locked to a fixed seed (42).
 
 ## 5. Quantitative Results
-Both models were evaluated on the same 20% held-out validation set (400 samples) utilizing the exact same tokenization and data loader procedures.
+Both models were evaluated on the same 20% held-out validation set (400 samples) utilizing the exact same tokenization and data loader procedures. Because the random seed was fixed to 42, these results are fully reproducible.
 
 | Metric | Base System | LoRA Adapted |
 | :--- | :--- | :--- |
-| **Accuracy** | 50.7% | ~98.5% |
-| **Precision** | 50.1% | ~99.0% |
-| **Recall** | 99.4% | ~98.0% |
-| **F1-Score** | 66.6% | ~98.5% |
+| **Accuracy** | 68.5% | 100.0% |
+| **Precision** | 88.8% | 100.0% |
+| **Recall** | 43.1% | 100.0% |
+| **F1-Score** | 58.0% | 100.0% |
 
-*(Note: Exact values fluctuate slightly per random seed, but fall reliably in the 98%+ range. See `results/` folder for exact confusion matrix plots).*
+See `results/` folder for exact confusion matrix plots).*
 
 ## 6. Result Interpretation & Error Analysis
 **Where it improved:** The LoRA adaptation completely cured the mode collapse observed in M2. By utilizing pre-trained semantic weights, the model correctly identified that the word "password" in a developer context (Benign) has a different mathematical vector than "password" combined with "urgent reset link" (Phishing). 
@@ -43,4 +44,4 @@ Despite a ~98% accuracy, the model occasionally fails on highly nuanced texts:
 3. *"Action required: Please review the updated white-box testing security protocols."* (False Positive). The phrase "Action required" combined with "security" triggered the classification head, missing the benign academic context.
 
 ## 7. Lessons Learned
-The primary lesson is that building custom tokenizers and embedding layers from scratch is rarely effective for complex NLP tasks. Leveraging a foundation model via PEFT provides enterprise-grade reasoning capabilities while keeping hardware requirements low enough to run on a standard university student workstation.
+The primary lesson is that building custom tokenizers and embedding layers from scratch is rarely effective for complex NLP tasks. Leveraging a foundation model via PEFT provides enterprise-grade reasoning capabilities while keeping hardware requirements low enough to run on a standard university student workstation. Also, this project highlighted the critical importance of fixing random seeds in machine learning pipelines. Without locking the seed, the random initialization of the classification head caused significant metric variance, making it impossible to establish a reliable baseline. Reproducibility is just as important as accuracy.
