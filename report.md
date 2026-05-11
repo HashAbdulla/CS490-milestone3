@@ -38,7 +38,7 @@ See `results/` folder for exact confusion matrix plots).*
 **Tradeoffs:** The subword tokenizer and transformer architecture require significantly more computational overhead during inference compared to a simple word-frequency map, requiring hardware acceleration (e.g., an RTX 3050 GPU) for real-time local deployment.
 
 **Representative Failure Cases:**
-Despite perfect accuracy, the model occasionally fails on highly nuanced texts:
+Despite perfect accuracy, the model occasionally fails on highly nuanced texts. The following are adversarial/edge cases identified through manual testing beyond the validation set:
 1. *"Can you securely send me the new database credentials for the staging environment?"* (False Positive). The model still occasionally flags highly secure IT talk because words like "credentials" carry heavy threat weights.
 2. *"Are we still on for lunch? Also, check out this funny picture I took of you last week [Link]."* (False Negative). Highly conversational spear-phishing that lacks any urgency or standard threat vocabulary bypasses the semantic filters.
 3. *"Action required: Please review the updated white-box testing security protocols."* (False Positive). The phrase "Action required" combined with "security" triggered the classification head, missing the benign academic context.
