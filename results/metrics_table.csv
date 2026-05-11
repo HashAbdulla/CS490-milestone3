@@ -1,0 +1,5 @@
+Metric,Base System,LoRA Adapted
+Accuracy,0.685,1.0
+Precision,0.8877551020408163,1.0
+Recall,0.4306930693069307,1.0
+F1-Score,0.58,1.0
